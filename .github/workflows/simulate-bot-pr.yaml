@@ -18,6 +18,7 @@ permissions:
   
 env:
   BRANCH_NAME: chore/update-packages-bot
+  GH_TOKEN: ${{ github.token }}
   
 jobs:
   simulate-pr:
