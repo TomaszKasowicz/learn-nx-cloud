@@ -34,6 +34,8 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
   
       - name: Checkout branch
         run: git checkout ${{ env.BRANCH_NAME }} || git checkout -b ${{ env.BRANCH_NAME }}
@@ -44,7 +46,7 @@ jobs:
       - name: Commit package.json updates
         run: |
           git add .
-          git commit -m "chore: update packages [automation]
+          git commit -m "chore: update packages [automation]"
         
       - name: Update Changelog
         run: echo "### Changelog Updated" >> CHANGELOG.md
