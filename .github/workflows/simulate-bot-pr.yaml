@@ -1,0 +1,70 @@
+name: Simualte Bot PR
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        type: boolean
+        default: true
+        
+defaults:
+  run:
+    shell: bash
+
+env:
+  BRANCH_NAME: chore/update-packages-bot
+  
+jobs:
+  simulate-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+  
+      - name: Checkout branch
+        run: git checkout ${{ env.BRANCH_NAME }} || git checkout -b ${{ env.BRANCH_NAME }}
+          
+      - name: Update package.json
+        run: npm install -D @softarc/sheriff-core @softarc/eslint-plugin-sheriff
+
+      - name: Update Changelog
+        run: echo "### Changelog Updated" >> CHANGELOG.md
+
+      - name: Configure GIT
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit Changes
+        run: |
+          git commit -m "chore: update packages [automated]"
+
+      - name: Push Changes
+        run: git push --set-upstream origin ${{ env.BRANCH_NAME }} ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Create Labels
+        run: |
+          gh label create automation-bot --color 0E8A16 --force
+          gh label create npm-install-success --color 0E8A16 --force
+          gh label create dependencies --color 0E8A16 --force
+
+      - name: Create PR
+        run: |
+          gh pr create \
+            --base ${{ github.event.repository.default_branch }} \
+            --head ${{ env.BRANCH_NAME }} \
+            --body "Update Packages" \
+            --title "chore: update packages [automation]" \
+            --label "automation-bot,npm-install-success,dependencies" \
+            ${{ inputs.dry_run && '--dry-run' || '' }}
+
+        
