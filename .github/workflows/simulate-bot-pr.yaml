@@ -19,6 +19,7 @@ permissions:
 env:
   BRANCH_NAME: chore/update-packages-bot
   GH_TOKEN: ${{ secrets.PR_CREATE_PAT }}
+  MSG_POSTFIX: '[automation]'
   
 jobs:
   simulate-pr:
@@ -29,6 +30,7 @@ jobs:
         with:
           fetch-depth: 0
           filter: tree:0
+          token: ${{ env.GH_TOKEN }}
 
       - name: Configure GIT
         run: |
@@ -51,7 +53,7 @@ jobs:
       - name: Commit package.json updates
         run: |
           git add .
-          git commit -m "chore: update packages [automation]"
+          git commit -m "chore: update packages ${{ env.MSG_POSTFIX }}"
         
       - name: Update Changelog
         run: echo "### Changelog Updated" >> CHANGELOG.md
@@ -59,7 +61,7 @@ jobs:
       - name: Commit Changes
         run: |
           git add .
-          git commit -m "chore: update changelog [automated]"
+          git commit -m "chore: update changelog ${{ env.MSG_POSTFIX }}"
 
       - name: Push Changes
         run: |
