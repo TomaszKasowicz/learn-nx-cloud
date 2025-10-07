@@ -56,7 +56,7 @@ jobs:
             const packageJson = JSON.parse(packageJsonString);
             packageJson.description = "description ${{ github.run_number }} ${{ github.run_id }}"
             fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2));
-            `
+
       - name: Commit package.json updates
         run: |
           git add .
