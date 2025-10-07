@@ -74,8 +74,6 @@ jobs:
           gh label create dependencies --color 0E8A16 --force
 
       - name: Create PR
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr create \
             --base ${{ github.event.repository.default_branch }} \
@@ -83,6 +81,7 @@ jobs:
             --body "Update Packages" \
             --title "chore: update packages [automation]" \
             --label "automation-bot,npm-install-success,dependencies" \
+            --asignee "Github Actions[bot]" \
             ${{ inputs.dry_run && '--dry-run' || '' }}
 
         
