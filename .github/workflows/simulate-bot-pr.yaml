@@ -53,7 +53,7 @@ jobs:
       - name: Commit package.json updates
         run: |
           git add .
-          git commit -m "chore: update packages ${{ env.MSG_POSTFIX }}"
+          git commit -m "chore: update packages ${{ env.MSG_POSTFIX }}" || true
         
       - name: Update Changelog
         run: echo "### Changelog Updated" >> CHANGELOG.md
@@ -61,7 +61,7 @@ jobs:
       - name: Commit Changes
         run: |
           git add .
-          git commit -m "chore: update changelog ${{ env.MSG_POSTFIX }}"
+          git commit -m "chore: update changelog ${{ env.MSG_POSTFIX }}" || true
 
       - name: Push Changes
         run: |
