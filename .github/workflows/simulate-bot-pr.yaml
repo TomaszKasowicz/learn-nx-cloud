@@ -48,8 +48,15 @@ jobs:
         run: git checkout ${{ env.BRANCH_NAME }} || git checkout -b ${{ env.BRANCH_NAME }}
           
       - name: Update package.json
-        run: npm install -D @softarc/sheriff-core @softarc/eslint-plugin-sheriff
-
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('node:fs');
+            const packageJsonString = fs.readFileSync('package-json', { encoding: 'utf8' });
+            const packageJson = JSON.parse(packageJsonString);
+            packageJson.description = "description ${{ github.run_number }} ${{ github.run_id }}"
+            fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2));
+            `
       - name: Commit package.json updates
         run: |
           git add .
@@ -82,5 +89,3 @@ jobs:
             --title "chore: update packages [automation]" \
             --label "automation-bot,npm-install-success,dependencies" \
             ${{ inputs.dry_run && '--dry-run' || '' }}
-
-        
