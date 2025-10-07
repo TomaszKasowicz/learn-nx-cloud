@@ -81,7 +81,6 @@ jobs:
             --body "Update Packages" \
             --title "chore: update packages [automation]" \
             --label "automation-bot,npm-install-success,dependencies" \
-            --assignee "Github Actions[bot]" \
             ${{ inputs.dry_run && '--dry-run' || '' }}
 
         
