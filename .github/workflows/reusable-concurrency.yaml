@@ -1,0 +1,14 @@
+on:
+  workflow_call:
+
+concurrency:
+  group: deploy-gh-pages
+  cancel-in-progress: false
+
+jobs:
+  sleeper:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "------ START ------"
+      - run: sleep 120
+      - run: echo "------ STOP  ------"
