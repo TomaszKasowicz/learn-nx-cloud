@@ -1,0 +1,10 @@
+on:
+  workflow_dispatch:
+
+
+concurrency:
+  group: main-${{ github.ref }}
+
+jobs:
+  run-reusable:
+    uses: ./.github/worfklows/reusable-concurrency.yaml
