@@ -7,4 +7,4 @@ concurrency:
 
 jobs:
   run-reusable:
-    uses: ./.github/worfklows/reusable-concurrency.yaml
+    uses: ./.github/workflows/reusable-concurrency.yaml
