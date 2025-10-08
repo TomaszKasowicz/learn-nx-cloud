@@ -1,0 +1,11 @@
+on:
+  workflow_dispatch:
+
+
+concurrency:
+  group: main2-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  run-reusable:
+    uses: ./.github/workflows/reusable-concurrency.yaml
