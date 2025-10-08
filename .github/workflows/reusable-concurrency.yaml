@@ -1,12 +1,27 @@
 on:
   workflow_call:
 
-concurrency:
-  group: deploy-gh-pages
-  cancel-in-progress: false
+
 
 jobs:
-  sleeper:
+  generate-docs:
+    runs-on: ubuntu-latest
+    outputs:
+      docs_created: ${{ steps.generate-docs.outputs.docs_created }}
+    steps:
+      - name: Generating Docs
+        id: generate-docs
+        run: |
+          echo "----- Generating Docs (60s) ----- "
+          sleep 60
+          echo "docs_created=true" >> $GITHUB_OUTPUT
+        
+  deploy-docs:
+    needs: generate-docs
+    if: ${{ needs.generate-docs.outputs.docs_created == 'true' }}
+    concurrency:
+      group: deploy-gh-pages
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     steps:
       - run: echo "------ START ------"
