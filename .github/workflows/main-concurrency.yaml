@@ -4,6 +4,7 @@ on:
 
 concurrency:
   group: main-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   run-reusable:
