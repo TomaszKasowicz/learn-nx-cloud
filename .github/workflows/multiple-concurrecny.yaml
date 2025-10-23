@@ -1,0 +1,6 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  run-reusable:
+    uses: ./.github/workflows/reusable-concurrency.yaml
