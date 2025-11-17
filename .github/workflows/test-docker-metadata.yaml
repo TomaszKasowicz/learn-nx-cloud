@@ -1,0 +1,51 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  test-calver-conversion:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test Calendar Version to Semantic Version
+        id: calver-to-semver
+        uses: ./.github/actions/web/zip-release/calver-to-semver
+        with:
+          calendar-version: 2025.10
+
+      - run: |
+          semver="${{ steps.calver-to-semver.outputs.semantic-version }}"
+          echo "SEMVER: $semver"
+        shell: bash
+
+  test-semver-conversion:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test Calendar Version to Semantic Version
+        id: semver-to-calver
+        uses: ./.github/actions/web/zip-release/semver-to-calver
+        with:
+            semantic-version: 2025.10.0
+
+      - run: |
+          calver="${{ steps.semver-to-calver.outputs.calendar-version }}"
+          echo "CALENDAR VERSION: $calver"
+        shell: bash
+
+  test-semver-on-docker:
+    if: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Docker metadata
+        id: docker-meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            name=test/test-app
+          tags: |
+            type=edge,branch=main
+          labels: |
+            org.opencontainers.image.title=test
+            org.opencontainers.image.vendor=Backbase
