@@ -5,10 +5,4 @@ jobs:
   matrix-job:
     uses: ./.github/workflows/test-reusable-with-matrix-input.yaml
     with:
-      matrix: >
-        '
-        { 
-          app: 'test',
-          version: 'version'
-        }
-        '
+      matrix: '{ app: "test", version: "version"}'
