@@ -57,7 +57,7 @@ jobs:
   api-docs-build-and-publish:
     needs: publish
     runs-on: ubuntu-latest
-    if: ${{ !inputs.skip-doc-publish }}
+    if: ${{ !cancelled() && needs.publish.result == 'success' && !inputs.skip-doc-publish }}
     steps:
       - run: |
           echo "---- API docs build and publish"
