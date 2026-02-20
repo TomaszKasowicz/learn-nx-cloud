@@ -1,0 +1,61 @@
+on:
+  workflow_dispatch:
+    inputs:
+      skip-doc-publish:
+        required: false
+        type: boolean
+        default: false
+      skip-publish:
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  display-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo '---- skip-doc-publish: ${{ inputs.skip-doc-publish }}'
+          echo '---- !skip-doc-publish: ${{ !inputs.skip-doc-publish }}'
+          echo '---- skip-publish: ${{ inputs.skip-publish }}'
+          echo '---- !skip-publish: ${{ !inputs.skip-publish }}'
+          
+  system-tests:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "---- System tests"
+
+  system-tests-gate:
+    runs-on: ubuntu-latest
+    needs: system-tests
+    if: ${{ always() }}
+    steps:
+    - name: Check the job status
+      id: check-tests-status
+      env:
+        SYSTEM_TESTS_RESULT: ${{ needs.system-tests.result }}
+      run: |
+        if [[ "$SYSTEM_TESTS_RESULT" == "success" || "$SYSTEM_TESTS_RESULT" == "skipped" ]]; then
+            echo "---- should-proceed=true"
+            echo "should-proceed=true" >> $GITHUB_OUTPUT
+        else
+            echo "---- should-proceed=false"
+            echo "should-proceed=false" >> $GITHUB_OUTPUT
+        fi
+
+  publish:
+    if: ${{ !inputs.skip-publish && !cancelled() && needs.system-tests-gate.outputs.should-proceed == 'true' }}
+    needs: system-tests-gate
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "---- Publish"
+
+  api-docs-build-and-publish:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: ${{ !inputs.skip-doc-publish }}
+    steps:
+      - run: |
+          echo "---- API docs build and publish"
